@@ -1,5 +1,7 @@
+import { ref, readonly } from 'vue';
 import { publishTheme } from '../api';
 import { useState } from '../state';
+import { useCraftileEditor } from './useCraftileEditor';
 
 const isPublishing = ref(false);
 

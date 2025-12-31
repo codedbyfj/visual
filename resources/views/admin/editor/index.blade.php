@@ -8,12 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if ($favicon = core()->getConfigData('general.design.admin_logo.favicon', core()->getCurrentChannelCode()))
-      <link
-        rel="icon"
-        sizes="16x16"
-        href="{{ \Illuminate\Support\Facades\Storage::url($favicon) }}"
-      />
     @else
       <link
         rel="icon"
@@ -21,6 +15,10 @@
         href="{{ bagisto_asset('images/favicon.ico') }}"
       />
     @endif
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     {{ ThemeEditor::renderStyles() }}
 

@@ -1,3 +1,4 @@
+import { reactive, toRefs, computed } from 'vue';
 import { Category, Channel, CmsPage, Image, Product, Template, Theme } from './types';
 
 export const VISUAL_EDITOR_STATE = Symbol('VISUAL_EDITOR_STATE');

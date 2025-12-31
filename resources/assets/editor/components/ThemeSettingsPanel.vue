@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { inject, ref } from 'vue';
 import { Accordion } from '@ark-ui/vue';
 import { PropertyField } from '@craftile/editor/ui';
 import { debounce } from 'perfect-debounce';
@@ -6,10 +7,11 @@ import useI18n from '../composables/i18n';
 import { useState } from '../state';
 import { persistThemeSettings as persistThemeSettingsApi } from '../api';
 import { CRAFTILE_EDITOR } from '../plugin';
+import { useCraftileEditor } from '../composables/useCraftileEditor';
 
 const { t } = useI18n();
 const { theme } = useState();
-const editor = inject<any>(CRAFTILE_EDITOR);
+const editor = useCraftileEditor();
 
 // Accumulator for pending setting changes
 const pendingUpdates = ref<Record<string, any>>({});
@@ -60,56 +62,63 @@ const updateSetting = (id: string, value: any) => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col overflow-y-hidden z-[100]">
-    <div class="flex-none h-12 flex items-center border-b px-4">
-      <h2>{{ t('Theme Settings') }}</h2>
+  <div class="h-full flex flex-col overflow-y-hidden z-[100] bg-zinc-950">
+    <div class="flex-none h-14 flex items-center border-b border-white/5 px-6">
+      <h2 class="text-sm font-bold uppercase tracking-widest text-zinc-400">{{ t('Theme Settings') }}</h2>
     </div>
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto custom-scrollbar">
       <div v-if="theme?.settingsSchema && theme.settingsSchema.length > 0">
-        <Accordion.Root
-          :value="theme.settingsSchema[0]?.name"
-          collapsible
-        >
+        <Accordion.Root :value="theme.settingsSchema[0]?.name" collapsible>
           <Accordion.Item
             v-for="group in theme.settingsSchema"
             :key="group.name"
             :value="group.name"
-            class="border-b"
+            class="border-b border-white/5"
           >
-            <Accordion.ItemTrigger class="w-full bg-white z-10 cursor-pointer px-4 py-3 font-medium text-sm hover:bg-gray-50 flex items-center justify-between text-zinc-700">
+            <Accordion.ItemTrigger
+              class="w-full bg-zinc-950 z-10 cursor-pointer px-6 py-4 font-bold text-xs uppercase tracking-wider hover:bg-zinc-900 flex items-center justify-between text-zinc-300 transition-colors"
+            >
               <span>{{ group.name }}</span>
-              <Accordion.ItemIndicator class="text-zinc-400 transition-transform duration-200 data-[state=open]:rotate-180">
-                <i-heroicons-chevron-down class="w-3 h-3" />
+              <Accordion.ItemIndicator
+                class="text-zinc-500 transition-transform duration-200 data-[state=open]:rotate-180"
+              >
+                <i-heroicons-chevron-down class="w-3.5 h-3.5" />
               </Accordion.ItemIndicator>
             </Accordion.ItemTrigger>
-            <Accordion.ItemContent class="px-4 py-3 space-y-4">
-              <template
-                v-for="setting in group.settings"
-                :key="setting.id"
-              >
-                <div
-                  v-if="setting.type === 'header'"
-                  class="border-t pt-2 mb-1"
-                >
-                  <h3 class="text-sm font-medium">{{ setting.label }}</h3>
+            <Accordion.ItemContent class="px-6 py-4 space-y-6">
+              <template v-for="setting in group.settings" :key="setting.id">
+                <div v-if="setting.type === 'header'" class="border-t border-white/5 pt-4 mb-2">
+                  <h3 class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{{ setting.label }}</h3>
                 </div>
-                <PropertyField
-                  v-else
-                  :field="setting"
-                  :model-value="theme?.settings?.[setting.id] ?? setting.default"
-                  @update:model-value="updateSetting(setting.id, $event)"
-                />
+                <div v-else class="space-y-2">
+                  <PropertyField
+                    :field="setting"
+                    :model-value="theme?.settings?.[setting.id] ?? setting.default"
+                    @update:model-value="updateSetting(setting.id, $event)"
+                  />
+                </div>
               </template>
             </Accordion.ItemContent>
           </Accordion.Item>
         </Accordion.Root>
       </div>
-      <div
-        v-else
-        class="p-4 text-sm text-gray-500 text-center"
-      >
-        {{ t('No theme settings available') }}
+      <div v-else class="p-12 text-sm text-zinc-600 text-center flex flex-col items-center justify-center gap-4">
+        <i-heroicons-face-frown class="w-10 h-10 opacity-20" />
+        <p>{{ t('No theme settings available') }}</p>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+</style>
