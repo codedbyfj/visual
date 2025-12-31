@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ config('app.locale') }}">
 
-  <head>
+<head>
     <title>Visual Editor</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @else
-      <link
-        rel="icon"
-        sizes="16x16"
-        href="{{ bagisto_asset('images/favicon.ico') }}"
-      />
-    @endif
+    <link rel="icon" sizes="16x16" href="{{ bagisto_asset('images/favicon.ico') }}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +17,7 @@
     {{ ThemeEditor::renderStyles() }}
 
     <script type="text/javascript">
-      window.editorConfig = @json($config)
+        window.editorConfig = @json($config)
     </script>
 
     {{-- blade-formatter-disable --}}
@@ -35,12 +29,12 @@
     {{-- blade-formatter-enable --}}
 
     {{ ThemeEditor::renderScripts() }}
-  </head>
+</head>
 
-  <body @if (core()->getCurrentLocale()->direction == 'rtl') class="rtl" @endif style="margin:0; padding: 0; position: relative">
+<body @if (core()->getCurrentLocale()->direction == 'rtl') class="rtl" @endif style="margin:0; padding: 0; position: relative">
 
     <div id="app" style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;"></div>
 
-  </body>
+</body>
 
 </html>
